@@ -42,7 +42,7 @@ rats=np.linspace(.8,2.2,29)
 T=.03*(u.AU.to(u.m))
 A=.3*(u.AU.to(u.m))
 R=4.8*(u.kpc.to(u.m))
-sig=(T/(2*np.sqrt(2*np.log(2)))
+sig=T/(2*np.sqrt(2*np.log(2)))
 #S_par=np.array([A,np.sqrt(A*R)])
 inc=1e-5*u.rad
 
