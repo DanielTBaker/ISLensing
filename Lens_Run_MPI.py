@@ -102,7 +102,7 @@ for rat in rats[job_nums(size,rats.shape[0],rank)]:
 		x0_crit,z_list=Lens_Mod.zbnd_find(zmin,zmax,10000,sheet_dir,sheet,S_par,inc)
 
 		#x=(np.concatenate((np.linspace(-100,-3,100),np.linspace(-3,3,100)[1:-1],np.linspace(3,100,100)))*u.mas).to(u.rad).value*Ds.value
-		x=(np.concatenate((np.linspace(-30,-3,10),np.linspace(-3,.5,500)[1:],np.linspace(.5,1.5,5000)[1:],np.linspace(1.5,3,100)[1:-1],np.linspace(3,30,10)))*(u.mas.to(u.rad))*Ds).astype('float128')
+		x=(np.concatenate((np.linspace(-30,-3,10),np.linspace(-3,.5,10)[1:],np.linspace(.5,1.5,10)[1:],np.linspace(1.5,3,10)[1:-1],np.linspace(3,30,10)))*(u.mas.to(u.rad))*Ds).astype('float128')
 
 		print('(%s) %s I Calc Start at %s' %(rank,rat,MPI.Wtime()-ts))
 
