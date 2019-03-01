@@ -48,7 +48,9 @@ inc=1e-5*u.rad
 
 Ds=(389*u.pc).to(u.m)
 
+print(args.s)
 params=np.array([args.s,inc.value,Ds.value,np.sqrt(A*R)])
+print(params)
 
 dirlistall = os.listdir('./')
 dirlist = list(filter(lambda x: x.startswith('Sims'), dirlistall))
