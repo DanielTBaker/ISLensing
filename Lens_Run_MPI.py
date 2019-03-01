@@ -13,6 +13,7 @@ from scipy.misc import derivative
 from time import perf_counter
 import os
 import argparse
+from emcee.utils import MPIPool
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -50,41 +51,6 @@ Ds=(389*u.pc).to(u.m)
 
 params=np.array([args.s,inc.value,Ds.value,np.sqrt(A*R)])
 
-dirlistall = os.listdir('./')
-dirlist = list(filter(lambda x: x.startswith('Sims'), dirlistall))
-if rank==0:
-	Exists=False
-	for i in range(len(dirlist)):
-		if np.all(params==np.load('./%s/Params.npy' %dirlist[i])):
-			Exists=True
-			par_number=dirlist[i][5:]
-	if not Exists:
-		par_number=len(dirlist)+1
-		while not Exists:
-			try:
-				os.mkdir('./Sims-%s' %par_number)
-				np.save('./Sims-%s/Params.npy' %par_number,params)
-				Exists=True
-			except:
-				if np.all(params==np.load('./Sims-%s/Params.npy' %par_number)):
-					Exists=True
-				else:
-					par_number+=1
-else:
-	par_number=None
-comm.Barrier()
-par_number = comm.bcast(par_number, root=0)
-filelistall = os.listdir('./Sims-%s/' %par_number)
-filelist = list(filter(lambda x: x.startswith('x-'), filelistall))
-Amps=np.zeros(len(filelist))
-for i in range(Amps.shape[0]):
-    Amps[i]=float(filelist[i][2:-4])
-rats=rats[np.isin(rats,Amps,invert=True)]
-comm.Barrier()
-
-
-
-
 def sheet(z,A,sig):
     return(A*np.exp(-np.power(z/sig,2)/2))
 def sheet_dl(z,A,sig):
@@ -92,9 +58,14 @@ def sheet_dl(z,A,sig):
 def sheet_dir(z,inc,A,sig):
     return(-z*A*np.exp(-np.power(z/sig,2)/2)/(sig**2)-np.tan(inc.value))
 
-for rat in rats[job_nums(size,rats.shape[0],rank)]:
+def Lens_Calc(task):
+	rat,par_number = task
+	global A
+	global R
+	global inc
+	global rank
+	global ts
 	try:
-		time_start=perf_counter()
 		S_par=np.array([np.tan(inc.value)*np.sqrt(A*R)*np.exp(1./2.)*rat,np.sqrt(A*R)])
 
 		zmax=100*S_par[1]
@@ -125,4 +96,44 @@ for rat in rats[job_nums(size,rats.shape[0],rank)]:
 		print('(%s) %s Done at %s' %(rank,rat,MPI.Wtime()-ts))
 	except:
 		print('(%s) %s Cannot Run' %(rank,rat))
+	return(0)
+	
 
+
+pool = MPIPool(loadbalance=True)
+if not pool.is_master():
+	pool.wait()
+	sys.exit(0)
+
+dirlistall = os.listdir('./')
+dirlist = list(filter(lambda x: x.startswith('Sims'), dirlistall))
+Exists=False
+for i in range(len(dirlist)):
+	if np.all(params==np.load('./%s/Params.npy' %dirlist[i])):
+		Exists=True
+		par_number=dirlist[i][5:]
+if not Exists:
+	par_number=len(dirlist)+1
+	while not Exists:
+		try:
+			os.mkdir('./Sims-%s' %par_number)
+			np.save('./Sims-%s/Params.npy' %par_number,params)
+			Exists=True
+		except:
+			if np.all(params==np.load('./Sims-%s/Params.npy' %par_number)):
+				Exists=True
+			else:
+				par_number+=1
+
+filelistall = os.listdir('./Sims-%s/' %par_number)
+filelist = list(filter(lambda x: x.startswith('x-'), filelistall))
+Amps=np.zeros(len(filelist))
+for i in range(Amps.shape[0]):
+    Amps[i]=float(filelist[i][2:-4])
+rats=rats[np.isin(rats,Amps,invert=True)]
+
+tasks=list((rats[i],par_number) for i in range(rats.shape[0]))
+
+vals = pool.map(Lens_Calc, tasks)
+
+poll.close()
