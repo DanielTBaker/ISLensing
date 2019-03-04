@@ -207,6 +207,45 @@ def res_improve(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig):
 		I2=I2[x2.argsort()]
 		x2=x2[x2.argsort()]
 	return(x2,I2)
+
+def res_improve_MPI(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool):
+	I2=np.copy(I)
+	x2=np.copy(x)*x.unit
+
+	idx_list = list()
+	for i in range(x2.shape[0]-2):
+		if np.abs(I2[i+1]-(I2[i]+(I2[i+2]-I2[i])*(x2[i+1]-x2[i])/(x2[i+2]-x2[i])))/I2[i+1]>err:
+			idx_list.append(i+1)
+	idx=np.array(idx_list,dtype=int)
+	x_new=np.zeros(2*idx.shape[0])
+	x_new[::2]=(x2[idx+1].value+x2[idx].value)/2
+	x_new[1::2]=(x2[idx-1]+x2[idx])/2
+	x_new*=x2.unit
+	x_new=np.unique(x_new)
+	I_new=I_calc_MPI(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
+
+	x2=np.concatenate((x2.value,x_new.value))*x2.unit
+	I2=np.concatenate((I2,I_new))
+	I2=I2[x2.argsort()]
+	x2=x2[x2.argsort()]
+	while idx.shape[0]>0:
+		idx_list = list()
+		for i in range(x2.shape[0]-2):
+			if np.abs(I2[i+1]-(I2[i]+(I2[i+2]-I2[i])*(x2[i+1]-x2[i])/(x2[i+2]-x2[i])))/I2[i+1]>err:
+				idx_list.append(i+1)
+		idx=np.array(idx_list,dtype=int)
+		x_new=np.zeros(2*idx.shape[0])
+		x_new[::2]=(x2[idx+1].value+x2[idx].value)/2
+		x_new[1::2]=(x2[idx-1]+x2[idx])/2
+		x_new*=x2.unit
+		x_new=np.unique(x_new)
+		I_new=I_calc_MPI(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
+
+		x2=np.concatenate((x2.value,x_new.value))*x2.unit
+		I2=np.concatenate((I2,I_new))
+		I2=I2[x2.argsort()]
+		x2=x2[x2.argsort()]
+	return(x2,I2)
 ##Improve resolution around all caustics 
 def caustic_res(x,I,beta_AR,theta_AR,rough,sheet,sheet_dl,zmax,zmin,S_par,inc,x0_crit,z_list,T,sig,ne,delta_ne,om,Ds,s,W,E_frac):
 	ne=ne.to(1/x.unit**3)
