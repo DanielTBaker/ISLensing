@@ -101,11 +101,11 @@ for rat in rats:
 
 	print('%s I Calc Start at %s' %(rat,MPI.Wtime()-ts))
 
-	I=Lens_Mod.I_calc_MPI(x.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
+	I=Lens_Mod.I_calc_mpi(x.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
 
 	print('(%s) %s Rough Grid Complete at %s' %(rank,rat,MPI.Wtime()-ts))
 
-	x2,I2=Lens_Mod.res_improve_MPI(1e-5,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
+	x2,I2=Lens_Mod.res_improve_mpi(1e-5,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
 
 	np.save('./Sims-%s/x-%s' %(par_number,rat) , x2.value)
 	np.save('./Sims-%s/I-%s' %(par_number,rat) , I2)

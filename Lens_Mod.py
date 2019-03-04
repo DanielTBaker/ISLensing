@@ -208,7 +208,7 @@ def res_improve(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig):
 		x2=x2[x2.argsort()]
 	return(x2,I2)
 
-def res_improve_MPI(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool):
+def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool):
 	I2=np.copy(I)
 	x2=np.copy(x)*x.unit
 
@@ -222,7 +222,7 @@ def res_improve_MPI(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 	x_new[1::2]=(x2[idx-1]+x2[idx])/2
 	x_new*=x2.unit
 	x_new=np.unique(x_new)
-	I_new=I_calc_MPI(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
+	I_new=I_calc_mpi(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
 
 	x2=np.concatenate((x2.value,x_new.value))*x2.unit
 	I2=np.concatenate((I2,I_new))
@@ -239,7 +239,7 @@ def res_improve_MPI(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 		x_new[1::2]=(x2[idx-1]+x2[idx])/2
 		x_new*=x2.unit
 		x_new=np.unique(x_new)
-		I_new=I_calc_MPI(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
+		I_new=I_calc_mpi(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
 
 		x2=np.concatenate((x2.value,x_new.value))*x2.unit
 		I2=np.concatenate((I2,I_new))
