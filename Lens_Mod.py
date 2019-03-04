@@ -13,7 +13,8 @@ def igrand(z,x0,inc,sig,S_par,sheet,sheet_dl):
 def dist(zp,x0,inc,S_par,sheet):
     return(np.cos(inc)*(x0-sheet(zp,*S_par))+np.sin(inc)*zp)
 
-def I_calc_indiv(x,inc,sig,x0_crit,z_list,S_par,zmin,zmax,sheet,sheet_dl):
+def I_calc_indiv(tasks):
+	x,inc,sig,x0_crit,z_list,S_par,zmin,zmax,sheet,sheet_dl = tasks
 	I=0
 	x0=x/np.cos(inc.value)
 	##x intercept of boundry curves
