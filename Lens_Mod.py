@@ -58,7 +58,7 @@ def I_calc_indiv(tasks):
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
-		ar1,ar2=np.array(z_list)[x0_crit==x0_crit[x0_crit>x0_l].min(),:][0,:],np.array(z_list)[x0_crit==x0_crit[x0_crit<x0_l].max(),:][0,:]
+		ar1,ar2=np.array(z_list)[x0_crit==x0_crit[x0_crit>x0_h].min(),:][0,:],np.array(z_list)[x0_crit==x0_crit[x0_crit<x0_h].max(),:][0,:]
 		full=np.concatenate((ar1,ar2))
 		int_set=np.concatenate((np.ones(ar1.shape[0]),np.ones(ar2.shape[0])*2))[full.argsort()]
 		full=full[full.argsort()]
