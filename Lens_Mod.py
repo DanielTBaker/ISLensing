@@ -239,14 +239,14 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 		print(idx.shape[0])
 		x_new=np.zeros(2*idx.shape[0])
 		x_new[::2]=(x2[idx+1].value+x2[idx].value)/2
-		if idx.shape[0]<10:
-			for i in range(idx.shape[0]):
-				print(np.abs(I2[idx[i]]-(I2[i]+(I2[idx[i]+1]-I2[idx[i]-1])*(x2[idx[i]]-x2[idx[i]-1])/(x2[idx[i]+1]-x2[idx[i]-1])))/I2[idx[i]])
 		x_new[1::2]=(x2[idx-1]+x2[idx])/2
 		x_new*=x2.unit
 		x_new=np.unique(x_new)
 		I_new=I_calc_mpi(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
 
+		if idx.shape[0]<10:
+			x2=np.delete(x2,idx)
+			I2=np.delete(I2,idx)
 		x2=np.concatenate((x2.value,x_new.value))*x2.unit
 		I2=np.concatenate((I2,I_new))
 		I2=I2[x2.argsort()]
