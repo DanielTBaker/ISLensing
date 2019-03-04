@@ -238,9 +238,9 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 		idx=np.array(idx_list,dtype=int)
 		print(idx.shape[0])
 		x_new=np.zeros(2*idx.shape[0])
-		if idx.shape[0]<10:
-			print(x_new)
 		x_new[::2]=(x2[idx+1].value+x2[idx].value)/2
+		if idx.shape[0]<10:
+			print(x_new[::2])
 		x_new[1::2]=(x2[idx-1]+x2[idx])/2
 		x_new*=x2.unit
 		x_new=np.unique(x_new)
