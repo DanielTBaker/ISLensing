@@ -136,4 +136,4 @@ tasks=list((rats[i],par_number) for i in range(rats.shape[0]))
 
 vals = pool.map(Lens_Calc, tasks)
 
-poll.close()
+pool.close()
