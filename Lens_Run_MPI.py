@@ -65,37 +65,37 @@ def Lens_Calc(task):
 	global inc
 	global rank
 	global ts
-	try:
-		S_par=np.array([np.tan(inc.value)*np.sqrt(A*R)*np.exp(1./2.)*rat,np.sqrt(A*R)])
+#	try:
+	S_par=np.array([np.tan(inc.value)*np.sqrt(A*R)*np.exp(1./2.)*rat,np.sqrt(A*R)])
 
-		zmax=100*S_par[1]
-		zmin=-100*S_par[1]
-		x0_crit,z_list=Lens_Mod.zbnd_find(zmin,zmax,10000,sheet_dir,sheet,S_par,inc)
+	zmax=100*S_par[1]
+	zmin=-100*S_par[1]
+	x0_crit,z_list=Lens_Mod.zbnd_find(zmin,zmax,10000,sheet_dir,sheet,S_par,inc)
 
-		#x=(np.concatenate((np.linspace(-100,-3,100),np.linspace(-3,3,100)[1:-1],np.linspace(3,100,100)))*u.mas).to(u.rad).value*Ds.value
-		x=(np.concatenate((np.linspace(-30,-3,10),np.linspace(-3,.5,10)[1:],np.linspace(.5,1.5,10)[1:],np.linspace(1.5,3,10)[1:-1],np.linspace(3,30,10)))*(u.mas.to(u.rad))*Ds).astype('float128')
+	#x=(np.concatenate((np.linspace(-100,-3,100),np.linspace(-3,3,100)[1:-1],np.linspace(3,100,100)))*u.mas).to(u.rad).value*Ds.value
+	x=(np.concatenate((np.linspace(-30,-3,10),np.linspace(-3,.5,10)[1:],np.linspace(.5,1.5,10)[1:],np.linspace(1.5,3,10)[1:-1],np.linspace(3,30,10)))*(u.mas.to(u.rad))*Ds).astype('float128')
 
-		print('(%s) %s I Calc Start at %s' %(rank,rat,MPI.Wtime()-ts))
+	print('(%s) %s I Calc Start at %s' %(rank,rat,MPI.Wtime()-ts))
 
-		I=Lens_Mod.I_calc(x.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig)
+	I=Lens_Mod.I_calc(x.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig)
 
-		print('(%s) %s Rough Grid Complete at %s' %(rank,rat,MPI.Wtime()-ts))
+	print('(%s) %s Rough Grid Complete at %s' %(rank,rat,MPI.Wtime()-ts))
 
-		x2,I2=Lens_Mod.res_improve(1e-5,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig)
+	x2,I2=Lens_Mod.res_improve(1e-5,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig)
 
-		np.save('./Sims-%s/x-%s' %(par_number,rat) , x2.value)
-		np.save('./Sims-%s/I-%s' %(par_number,rat) , I2)
-		plt.figure()
-		plt.plot(x2,I2)
-		plt.plot(x,I)
-		plt.savefig('./Sims-%s/Thickness-%s.png' %(par_number,rat))
-		plt.close('all')
-	#	np.save('E-%s' %rat , Err)
+	np.save('./Sims-%s/x-%s' %(par_number,rat) , x2.value)
+	np.save('./Sims-%s/I-%s' %(par_number,rat) , I2)
+	plt.figure()
+	plt.plot(x2,I2)
+	plt.plot(x,I)
+	plt.savefig('./Sims-%s/Thickness-%s.png' %(par_number,rat))
+	plt.close('all')
+#	np.save('E-%s' %rat , Err)
 
-		time_end=perf_counter()
-		print('(%s) %s Done at %s' %(rank,rat,MPI.Wtime()-ts))
-	except:
-		print('(%s) %s Cannot Run' %(rank,rat))
+	time_end=perf_counter()
+	print('(%s) %s Done at %s' %(rank,rat,MPI.Wtime()-ts))
+#	except:
+#		print('(%s) %s Cannot Run' %(rank,rat))
 	return(0)
 	
 
