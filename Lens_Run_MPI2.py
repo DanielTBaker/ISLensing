@@ -96,6 +96,7 @@ for rat in rats:
 	zmax=100*S_par[1]
 	zmin=-100*S_par[1]
 	x0_crit,z_list=Lens_Mod.zbnd_find(zmin,zmax,10000,sheet_dir,sheet,S_par,inc)
+	print(x0_crit,z_list)
 
 	x=(np.concatenate((np.linspace(-30,-3,100),np.linspace(-3,.5,1000)[1:],np.linspace(.5,1.5,3000)[1:],np.linspace(1.5,3,1000)[1:-1],np.linspace(3,30,100)))*(u.mas.to(u.rad))*Ds).astype('float128')
 
