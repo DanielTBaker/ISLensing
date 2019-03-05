@@ -246,6 +246,8 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 			print(I2[idx-1])
 			print(I2[idx])
 			print(I2[idx+1])
+			x2=np.delete(x2,idx)
+			I2=np.delete(I2,idx)
 		else:
 			x_new=np.zeros(2*idx.shape[0])
 			x_new[::2]=(x2[idx+1].value+x2[idx].value)/2
