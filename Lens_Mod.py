@@ -209,7 +209,7 @@ def res_improve(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig):
 		x2=x2[x2.argsort()]
 	return(x2,I2)
 
-def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool):
+def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool,size):
 	I2=np.copy(I)
 	x2=np.copy(x)*x.unit
 
@@ -237,9 +237,13 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 				idx_list.append(i+1)
 		idx=np.array(idx_list,dtype=int)
 		print(idx.shape[0])
-		x_new=np.zeros(2*idx.shape[0])
-		x_new[::2]=(x2[idx+1].value+x2[idx].value)/2
-		x_new[1::2]=(x2[idx-1]+x2[idx])/2
+		if idx.shape[0]<size:
+			n_bet=(1+(size//idx.shape[0]))*idx.shape[0]
+			x_new = np.array([np.concatenate((np.linspace(x2[idx[i] - 1], x2[idx[i]], n_bet + 2)[1:-1],np.linspace(x2[idx[i]], x2[idx[i]+1], n_bet + 2)[1:-1])) for i in range(idx.shape[0])]).flatten()
+		else:
+			x_new=np.zeros(2*idx.shape[0])
+			x_new[::2]=(x2[idx+1].value+x2[idx].value)/2
+			x_new[1::2]=(x2[idx-1]+x2[idx])/2
 		x_new*=x2.unit
 		x_new=np.unique(x_new)
 		I_new=I_calc_mpi(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
