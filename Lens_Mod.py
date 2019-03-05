@@ -237,7 +237,7 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 				idx_list.append(i+1)
 		idx=np.array(idx_list,dtype=int)
 		print(idx.shape[0])
-		if idx.shape[0]<size:
+		if idx.shape[0]<size and idx.shape[0]>0:
 			n_bet=(1+(size//idx.shape[0]))*idx.shape[0]
 			x_new = np.array([np.concatenate((np.linspace(x2[idx[i] - 1], x2[idx[i]], n_bet + 2)[1:-1],np.linspace(x2[idx[i]], x2[idx[i]+1], n_bet + 2)[1:-1])) for i in range(idx.shape[0])]).flatten()
 		else:
