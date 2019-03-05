@@ -243,7 +243,7 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 			print(x2[idx]-x2[idx-1])
 			print(x2[idx+1]-x2[idx])
 			print(np.abs(I2[idx]-(I2[idx-1]+(I2[idx+1]-I2[idx-1])*(x2[idx]-x2[idx-1])/(x2[idx+1]-x2[idx-1])))/I2[idx])
-			print(IS[idx-1])
+			print(I2[idx-1])
 			print(I2[idx])
 			print(I2[idx+1])
 		else:
