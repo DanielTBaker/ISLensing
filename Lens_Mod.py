@@ -243,6 +243,7 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 			print(x2[idx]-x2[idx-1])
 			print(x2[idx+1]-x2[idx])
 			print(np.abs(I2[idx]-(I2[idx-1]+(I2[idx+1]-I2[idx-1])*(x2[idx]-x2[idx-1])/(x2[idx+1]-x2[idx-1])))/I2[idx])
+			print(IS[idx-1])
 			print(I2[idx])
 			print(I2[idx+1])
 		else:
@@ -254,8 +255,10 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 		I_new=I_calc_mpi(x_new.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
 		x2=np.concatenate((x2.value,x_new.value))*x2.unit
 		I2=np.concatenate((I2,I_new))
-		I2=I2[x2.argsort()]
-		x2=x2[x2.argsort()]
+		x2,idx_unique=np.unique(x2,return_index=True)
+		I2=I2[idx_unique]
+#		I2=I2[x2.argsort()]
+#		x2=x2[x2.argsort()]
 	return(x2,I2)
 ##Improve resolution around all caustics 
 def caustic_res(x,I,beta_AR,theta_AR,rough,sheet,sheet_dl,zmax,zmin,S_par,inc,x0_crit,z_list,T,sig,ne,delta_ne,om,Ds,s,W,E_frac):
