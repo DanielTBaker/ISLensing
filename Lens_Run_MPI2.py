@@ -26,7 +26,7 @@ parser = argparse.ArgumentParser(description='Lens Recovery Code for B1957')
 parser.add_argument('-s', type = float, default = 2, help = 'Lens Thickness Sigma')
 parser.add_argument('-l', type = float, default = 0, help = 'Lower Bound on Amplitude Parameter')
 parser.add_argument('-u', type = float, default = 2.2, help = 'Upper Bound on Amplitude Parameter')
-parser.add_argument('-n', type = int, defualt = 45, help = 'Number of Amplitude Parameters in Range')
+parser.add_argument('-n', type = int, default = 45, help = 'Number of Amplitude Parameters in Range')
 
 args = parser.parse_args()
 
