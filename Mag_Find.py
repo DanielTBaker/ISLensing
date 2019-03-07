@@ -131,6 +131,7 @@ def dspec_calc(task):
 		om_max[i] = om[dspec2.max(1) == dspec2.max()][0]
 		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0]
 		mu_max[i] = dspec2.max()
+	print('%sdense screen Amp = %s complete in %s' %(dens,rat,dirname))
 	return(mu_max,beta_max,om_max,dirnam,rat,dens)
 
 pool = MPIPool(loadbalance=True)
