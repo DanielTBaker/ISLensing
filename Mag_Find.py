@@ -10,6 +10,7 @@ import os
 import argparse
 from emcee.utils import MPIPool
 import sys
+from scipy.interpolate import interp1d
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
