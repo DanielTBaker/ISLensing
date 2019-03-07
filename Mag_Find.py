@@ -89,24 +89,19 @@ def dspec_calc(task):
 	interp = interp1d(x, I, kind='quadratic')
 	I_interp = interp(x_interp)		
 	if dens == 'Over':
-            delta_ne = np.abs(delta_ne)
+		delta_ne = np.abs(delta_ne)
         else:
-            delta_ne = -np.abs(delta_ne)
+		delta_ne = -np.abs(delta_ne)
         beta_AR = np.empty(x_interp.shape)
-        theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne,
-                                                                 delta_ne, om, Ds, s)
+        theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne,delta_ne, om, Ds, s)
         dspec[:,:-1]=vec_hist(beta_AR, beta_dspec)
-        dspec *= (np.median(
-            (np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /
-                  np.median(np.diff(beta_dspec))).value
+        dspec *= (np.median((np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /np.median(np.diff(beta_dspec))).value
         dspec[:, -1] = 1
         om_temp = om[dspec.max(1) == dspec.max()][:1]
-        theta_AR, beta_AR = Lens_Mod.Im_find(
-            x_interp * u.m, I_interp, ne, delta_ne, om_temp, Ds, s)
+        theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne, delta_ne, om_temp, Ds, s)
         mu = 1 / np.gradient(beta_AR[0,:], theta_AR)
         rough_temp = idx[1:][np.abs(np.diff(np.sign(mu))) == 2]
-        rough = np.concatenate((np.zeros(1, dtype=int), rough_temp,
-                                np.array([x_interp.shape[0]], dtype=int)))
+        rough = np.concatenate((np.zeros(1, dtype=int), rough_temp,np.array([x_interp.shape[0]], dtype=int)))
         plt.figure(1)
         for k in range(rough.shape[0] - 1):
             plt.subplot(211)
@@ -114,15 +109,12 @@ def dspec_calc(task):
                      theta_AR[rough[k]:rough[k + 1]])
             plt.xlabel('Pulsar Position (mas)')
             plt.ylabel('Image Position (mas)')
-            plt.title('Image Positions for $A_{par} = %s$ (%sdense)' %
-                      (rat, dens))
+            plt.title('Image Positions for $A_{par} = %s$ (%sdense)' %(rat, dens))
             plt.subplot(212)
-            plt.plot(beta_AR[0,rough[k]:rough[k + 1]],
-                     np.abs(mu[rough[k]:rough[k + 1]]))
+            plt.plot(beta_AR[0,rough[k]:rough[k + 1]],np.abs(mu[rough[k]:rough[k + 1]]))
             plt.xlabel('Pulsar Position (mas)')
             plt.ylabel('Magnification')
-            plt.title('Magnification for $A_{par} = %s$ (%sdense)' %
-                      (rat, dens))
+            plt.title('Magnification for $A_{par} = %s$ (%sdense)' %(rat, dens))
             plt.yscale('log')
         plt.subplot(211)
         plt.xlim((-5, 5))
