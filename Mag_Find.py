@@ -154,6 +154,7 @@ tasks=list()
 for i in range(len(dirlist)):
 	for k in range(len(filelist[i])):
 		tasks.append((dirlist[i],filelist[i][k],'Under'))
+print(len(tasks))
 
 vals = pool.map(dspec_calc,tasks)
 np.save('MagPeaks.npy',vals)
