@@ -68,7 +68,7 @@ def dspec_calc(task):
 		I = np.load('./%s/I-0.0.npy' % dirname)
 		x = np.load('./%s/x-0.0.npy' % dirname)
 		I *= 0
-		dr = './%s/A0/' % dirlist[dir_num]
+		dr = './%s/A0/' % dirname
 	else:
 		I = np.load('./%s/I-%s.npy' % (dirname, rat))
 		x = np.load('./%s/x-%s.npy' % (dirname, rat))
