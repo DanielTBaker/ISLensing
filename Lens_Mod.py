@@ -145,7 +145,7 @@ def I_calc(x,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig):
 			I[idx]+=quad(igrand,ints_tot[::2][i],ints_tot[1::2][i],args=(x0,inc,sig,S_par,sheet,sheet_dl),epsrel=1.e-16)[0]
 	return(I)
 ##Calulate image positions (beta,theta) and give rough estimate of caustic locations
-def Im_find(x,I,ne,delta_ne,om,Ds,s,x_old=np.empty(0),I_old=np.empty(0)):
+def Im_find(x,I,ne,delta_ne,om,Ds,s):
 	ne=ne.to(1/x.unit**3)
 	delta_ne=delta_ne.to(1/x.unit**3)
 	nx=x.shape[0]
@@ -154,20 +154,11 @@ def Im_find(x,I,ne,delta_ne,om,Ds,s,x_old=np.empty(0),I_old=np.empty(0)):
 	omp=np.sqrt(4*np.pi*re*(ne+delta_ne))*(const.c.to(x.unit/u.s))
 	n=np.sqrt(1-(omp/om)**2)
 	n0=np.sqrt(1-(np.sqrt(4*np.pi*re*ne)*(const.c.to(x.unit/u.s))/om)**2)
-	alpha=-s*(lam**2)*re/(2*np.pi)*np.gradient(I,x.value)*delta_ne
-	if x_old.shape[0]>0:
-		if I_old.shape[0]==0:
-			I_old=I[np.isin(x,x_old)]
-		alpha_old=-s*(lam**2)*re/(2*np.pi)*np.gradient(I_old,x_old.value)*delta_ne
-		alpha[np.isin(x,x_old)]=alpha_old
+	alpha=-s*(lam[:,np.newaxis]**2)*re/(2*np.pi)*np.gradient(I,x.value)[np.newaxis,:]*delta_ne
 	theta_AR=((x/Ds))
-	beta_AR=(theta_AR+alpha)*(u.rad.to(u.mas))
+	beta_AR=(alpha+theta_AR)*(u.rad.to(u.mas))
 	theta_AR=((x/Ds))*(u.rad.to(u.mas))
-	grad=np.gradient(beta_AR,theta_AR)
-	diff=np.concatenate((np.zeros(1,dtype='float128'),np.diff(np.sign(grad))))
-	idx=np.linspace(0,nx-1,nx,dtype=int)
-	rough=idx[np.abs(diff)==2]
-	return(theta_AR,beta_AR,rough)
+	return(theta_AR,beta_AR)
 
 
 def res_improve(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig):
