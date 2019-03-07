@@ -148,7 +148,7 @@ for i in range(len(dirlist)):
     filelist.append(temp_list)
 
 tasks=list()
-for i in range(len(dirlist))
+for i in range(len(dirlist)):
 	for k in range(len(filelist[i])):
 		tasks.append((dirlist[i],filelist[i][k],'Under'))
 
