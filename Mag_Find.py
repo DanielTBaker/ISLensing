@@ -142,6 +142,7 @@ if not pool.is_master():
 
 dirlistall = os.listdir('./')
 dirlist = list(filter(lambda x: x.startswith('Sims'), dirlistall))
+print(dirlist)
 
 filelist = list()
 for i in range(len(dirlist)):
@@ -156,3 +157,5 @@ for i in range(len(dirlist)):
 
 vals = pool.map(dspec_calc,tasks)
 np.save('MagPeaks.npy',vals)
+
+pool.close()
