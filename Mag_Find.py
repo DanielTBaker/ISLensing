@@ -152,8 +152,8 @@ def dspec_find(task):
 	for i in range(widths.shape[0]):
 		dspec2 = np.fft.irfft(Fdspec * Fgau[i, :], axis=1)
 		print('%s %s %sdense %s width Dspec Complete at %s' % (direct, rat, dens, widths[i], MPI.Wtime()-ts))
-		om_max[i] = om[dspec2.max(1) == dspec2.max()][0]
-		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0]
+		om_max[i] = om[dspec2.max(1) == dspec2.max()][0].value
+		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0].value
 		mu_max[i] = dspec2.max()
 	return(mu_max,om_max,beta_max,dens,rat,direct)
 
