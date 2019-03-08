@@ -72,8 +72,8 @@ def vec_hist(a, bins):
 
 
 def dspec_find(task):
-	rat=task[0]
-	direct=task[1]
+	rat=task[1]
+	direct=task[0]
 	dens=task[2]
 	global x_interp
 	global ne
