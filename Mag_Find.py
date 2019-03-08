@@ -111,8 +111,8 @@ def dspec_find(task):
 	else:
 		delta_ne = -np.abs(delta_ne)
 	for i in range(om.shape[0]):
-		theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne,delta_ne, om[i,i+1], Ds, s)
-		dspec[i,:-1]=np.hist(beta_AR[0,:], bins=beta_dspec)
+		theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne,delta_ne, om[i:i+1], Ds, s)
+		dspec[i,:-1]=np.histogram(beta_AR[0,:], bins=beta_dspec)
 	dspec *= (np.median((np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /np.median(np.diff(beta_dspec))).value
 	dspec[:, -1] = 1
 	print('%s %s %sdense Dspec Complete at %s' %(direct, rat, dens, MPI.Wtime()-ts))
