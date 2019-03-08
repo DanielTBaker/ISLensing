@@ -83,6 +83,8 @@ def dspec_find(task):
 	global s
 	global width
 	global Fgau
+	global dspec
+	ts=MPI.Wtime()
 	if rat == 0.0:
 		I = np.load('./%s/I-0.0.npy' % direct)
 		x = np.load('./%s/x-0.0.npy' % direct)
@@ -108,7 +110,7 @@ def dspec_find(task):
 	plt.close('all')
 	interp = interp1d(x, I, kind='quadratic')
 	I_interp = interp(x_interp)
-	print('%s %s Interpolation Complete at %s' % (direct,rat,MPI.Wtime()))
+	print('%s %s Interpolation Complete at %s' % (direct,rat,MPI.Wtime()-ts))
 	dspec *= 0
 	if dens == 'Over':
 		delta_ne = np.abs(delta_ne)
@@ -118,7 +120,7 @@ def dspec_find(task):
 	dspec[:,:-1]=vec_hist(beta_AR, beta_dspec)
 	dspec *= (np.median((np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /np.median(np.diff(beta_dspec))).value
 	dspec[:, -1] = 1
-	print('%s %s %sdense Dspec Complete at %s' %(direct, rat, dens, MPI.Wtime()))
+	print('%s %s %sdense Dspec Complete at %s' %(direct, rat, dens, MPI.Wtime()-ts))
 	om_temp = om[dspec.max(1) == dspec.max()][:1]
 	theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne, delta_ne, om_temp, Ds, s)
 	mu = 1 / np.gradient(beta_AR[0,:], theta_AR)
@@ -154,7 +156,7 @@ def dspec_find(task):
 	mu_max=np.zeros(widths.shape)
 	for i in range(widths.shape[0]):
 		dspec2 = np.fft.irfft(Fdspec * Fgau[i, :], axis=1)
-		print('%s %s %s %sdense %s width Dspec Complete at %s' % (direct, rat, dens, widths[i], MPI.Wtime()))
+		print('%s %s %s %sdense %s width Dspec Complete at %s' % (direct, rat, dens, widths[i], MPI.Wtime()-ts))
 		om_max[i] = om[dspec2.max(1) == dspec2.max()][0]
 		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0]
 		mu_max[i] = dspec2.max()
