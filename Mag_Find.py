@@ -65,12 +65,6 @@ for i in range(len(dirlist)):
     temp_list = list(filter(lambda x: x.startswith('x-'), filelistall))
     filelist.append(temp_list)
 
-run_start = perf_counter()
-def vec_hist(a, bins):
-    i = np.repeat(np.arange(0,a.shape[0]),a.shape[1])
-    return np.histogram2d(i, a.flatten(), (a.shape[0], bins))[0]
-
-
 def dspec_find(task):
 	rat=task[1]
 	direct=task[0]
@@ -116,8 +110,9 @@ def dspec_find(task):
 		delta_ne = np.abs(delta_ne)
 	else:
 		delta_ne = -np.abs(delta_ne)
-	theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne,delta_ne, om, Ds, s)
-	dspec[:,:-1]=vec_hist(beta_AR, beta_dspec)
+	for i in range(om.shape[0]):
+		theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne,delta_ne, om[i,i+1], Ds, s)
+		dspec[i,:-1]=np.hist(beta_AR[0,:], bins=beta_dspec)
 	dspec *= (np.median((np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /np.median(np.diff(beta_dspec))).value
 	dspec[:, -1] = 1
 	print('%s %s %sdense Dspec Complete at %s' %(direct, rat, dens, MPI.Wtime()-ts))
