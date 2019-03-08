@@ -85,9 +85,9 @@ def dspec_find(task):
 	global Fgau
 	if rat == 0.0:
 		I = np.load('./%s/I-0.0.npy' % direct)
-		x = np.load('./%s/x-0.0.npy' % direct])
+		x = np.load('./%s/x-0.0.npy' % direct)
 		I *= 0
-		dr = './%s/A0/' % dirlist[dir_num]
+		dr = './%s/A0/' % direct
 	else:
 		I = np.load('./%s/I-%s.npy' % (direct, rat))
 		x = np.load('./%s/x-%s.npy' % (direct, rat))
