@@ -155,6 +155,20 @@ def dspec_find(task):
 		om_max[i] = om[dspec2.max(1) == dspec2.max()][0].value
 		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0].value
 		mu_max[i] = dspec2.max()
+
+		plt.figure()
+		plc = plt.pcolormesh(beta_dspec,om.to(u.MHz).value,dspec2,norm=colors.LogNorm(),rasterized=True)
+		plc.set_edgecolor('face')
+		plt.axhline(om_temp.to(u.MHz).value)
+		plt.colorbar()
+		plt.yscale('log')
+		plt.xlabel('Pulsar Position (mas)')
+		plt.ylabel('Frequency (MHz)')
+		plt.title(r'Dynamic Spectrum for $A_{par} = %s$ and SW %s (%sdense)'
+		% (rat, widths[i], dens))
+		plt.savefig('%sdspec-%s%s-W%s.png' % (dr, rat, dens, widths[i]))
+		plt.close('all')
+
 	return(mu_max,om_max,beta_max,dens,rat,direct)
 
 pool = MPIPool(loadbalance=True)
