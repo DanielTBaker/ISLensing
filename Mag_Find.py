@@ -115,6 +115,20 @@ def dspec_find(task):
 		dspec[i,:-1]=np.histogram(beta_AR[0,:], bins=beta_dspec)[0]
 	dspec *= (np.median((np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /np.median(np.diff(beta_dspec))).value
 	dspec[:, -1] = 1
+
+	plt.figure()
+	plc = plt.pcolormesh(np.mean(np.reshape(beta_dspec,(-1,100))),axis=1),om.to(u.MHz).value,np.mean(np.reshape(dspec,(om.shape[0],-1,100)),axis=2),norm=colors.LogNorm(),rasterized=True)
+	plc.set_edgecolor('face')
+	plt.axhline(om_temp.to(u.MHz).value)
+	plt.colorbar()
+	plt.yscale('log')
+	plt.xlabel('Pulsar Position (mas)')
+	plt.ylabel('Frequency (MHz)')
+	plt.title(r'Dynamic Spectrum for $A_{par} = %s$ (%sdense)'
+	% (rat, dens))
+	plt.savefig('%sdspec-%s%s.png' % (dr, rat, dens))
+	plt.close('all')
+
 	print('%s %s %sdense Dspec Complete at %s' %(direct, rat, dens, MPI.Wtime()-ts))
 	om_temp = om[dspec.max(1) == dspec.max()][:1]
 	theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne, delta_ne, om_temp, Ds, s)
@@ -155,19 +169,6 @@ def dspec_find(task):
 		om_max[i] = om[dspec2.max(1) == dspec2.max()][0].value
 		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0].value
 		mu_max[i] = dspec2.max()
-
-		plt.figure()
-		plc = plt.pcolormesh(beta_dspec,om.to(u.MHz).value,dspec2,norm=colors.LogNorm(),rasterized=True)
-		plc.set_edgecolor('face')
-		plt.axhline(om_temp.to(u.MHz).value)
-		plt.colorbar()
-		plt.yscale('log')
-		plt.xlabel('Pulsar Position (mas)')
-		plt.ylabel('Frequency (MHz)')
-		plt.title(r'Dynamic Spectrum for $A_{par} = %s$ and SW %s (%sdense)'
-		% (rat, widths[i], dens))
-		plt.savefig('%sdspec-%s%s-W%s.png' % (dr, rat, dens, widths[i]))
-		plt.close('all')
 
 	return(mu_max,om_max,beta_max,dens,rat,direct)
 
