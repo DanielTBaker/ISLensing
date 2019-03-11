@@ -175,7 +175,7 @@ om_max=np.zeros((len(vals),widths.shape[0]))
 beta_max=np.zeros((len(vals),widths.shape[0]))
 rats=np.zeros(len(vals))
 dens=np.empty(len(vals),dtype='<U10')
-dirs=np.empty(len(vals),,dtype='<U10')
+dirs=np.empty(len(vals),dtype='<U10')
 
 for i in range(len(vals)):
 	mu_max[i,:]=vals[i][0]
