@@ -117,7 +117,7 @@ def dspec_find(task):
 	dspec[:, -1] = 1
 
 	plt.figure()
-	plc = plt.pcolormesh(np.mean(np.reshape(beta_dspec,(-1,100))),axis=1),om.to(u.MHz).value,np.mean(np.reshape(dspec,(om.shape[0],-1,100)),axis=2),norm=colors.LogNorm(),rasterized=True)
+	plc = plt.pcolormesh(np.mean(np.reshape(beta_dspec,(-1,100)),axis=1),om.to(u.MHz).value,np.mean(np.reshape(dspec,(om.shape[0],-1,100)),axis=2),norm=colors.LogNorm(),rasterized=True)
 	plc.set_edgecolor('face')
 	plt.axhline(om_temp.to(u.MHz).value)
 	plt.colorbar()
