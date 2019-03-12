@@ -117,6 +117,13 @@ def dspec_find(task):
 	dspec[:, -1] = 1
 
 	plt.figure()
+	plt.plot(beta_dspec,dspec[om==om[dspec.max(1)==dspec.max],:])
+	plt.xlabel('Pulsar Position (mas)')
+	plt.ylabel('Magnification')
+	plt.savefig('%sDspec_Slice_%s_%s.png.png' % (dr, rat, 0, dens[0]))
+	plt.close('all')
+
+	plt.figure()
 	plc = plt.pcolormesh(np.mean(np.reshape(beta_dspec,(-1,100)),axis=1),om.to(u.MHz).value,np.mean(np.reshape(dspec,(om.shape[0],-1,100)),axis=2),norm=colors.LogNorm(),rasterized=True)
 	plc.set_edgecolor('face')
 	plt.colorbar()
@@ -166,7 +173,7 @@ def dspec_find(task):
 		dspec2 = np.fft.irfft(Fdspec * Fgau[i, :], axis=1)
 		print('%s %s %sdense %s width Dspec Complete at %s' % (direct, rat, dens, widths[i], MPI.Wtime()-ts))
 		om_max[i] = om[dspec2.max(1) == dspec2.max()][0].value
-		beta_max[i] = beta_dspec[dspec2.max(1) == dspec2.max()][0].value
+		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0].value
 		mu_max[i] = dspec2.max()
 		plt.figure()
 		plt.plot(beta_dspec,dspec2[om==om_max[i],:])
