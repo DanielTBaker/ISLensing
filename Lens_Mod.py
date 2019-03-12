@@ -151,9 +151,6 @@ def Im_find(x,I,ne,delta_ne,om,Ds,s):
 	nx=x.shape[0]
 	lam=(const.c.to(x.unit/u.s))/om
 	re=(2.8179403229e-15*u.m).to(x.unit)
-	omp=np.sqrt(4*np.pi*re*(ne+delta_ne))*(const.c.to(x.unit/u.s))
-	n=np.sqrt(1-(omp/om)**2)
-	n0=np.sqrt(1-(np.sqrt(4*np.pi*re*ne)*(const.c.to(x.unit/u.s))/om)**2)
 	alpha=-s*(lam[:,np.newaxis]**2)*re/(2*np.pi)*np.gradient(I,x.value)[np.newaxis,:]*delta_ne
 	theta_AR=((x/Ds))
 	beta_AR=(alpha+theta_AR)*(u.rad.to(u.mas))

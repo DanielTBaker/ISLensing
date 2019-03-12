@@ -40,10 +40,10 @@ Dp = (620 * u.pc).to(u.m)
 Dps = Ds - Dp
 s = 1 - Ds / Dp
 
-widths = np.logspace(-5, -2, 4) * u.mas
+widths = np.logspace(-5, 0, 6) * u.mas
 
 beta_dspec = np.linspace(0, 2, 100000) * u.mas
-x_interp = np.linspace(-5, 5, 2000000) * (u.mas.to(u.rad)) * Ds.value
+x_interp = np.linspace(-5, 5, 4000000) * (u.mas.to(u.rad)) * Ds.value
 idx = np.linspace(0, x_interp.shape[0] - 1, x_interp.shape[0]).astype(int)
 
 beta_dspec_shift = np.roll(beta_dspec, int(beta_dspec.shape[0] / 2))
@@ -166,8 +166,14 @@ def dspec_find(task):
 		dspec2 = np.fft.irfft(Fdspec * Fgau[i, :], axis=1)
 		print('%s %s %sdense %s width Dspec Complete at %s' % (direct, rat, dens, widths[i], MPI.Wtime()-ts))
 		om_max[i] = om[dspec2.max(1) == dspec2.max()][0].value
-		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0].value
+		beta_max[i] = beta_dspec[dspec2.max(1) == dspec2.max()][0].value
 		mu_max[i] = dspec2.max()
+		plt.figure()
+		plt.plot(beta_dspec,dspec2[om==om_max[i],:])
+		plt.xlabel('Pulsar Position (mas)')
+		plt.ylabel('Magnification')
+		plt.savefig('%sDspec_Slice_%s_%s.png.png' % (dr, rat, widths[i], dens[0]))
+		plt.close('all')
 
 	return(mu_max,om_max,beta_max,dens,rat,direct)
 
