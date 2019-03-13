@@ -121,7 +121,7 @@ def dspec_find(task):
 	plt.plot(beta_dspec,dspec[om==om[dspec.max(1)==dspec.max()],:][0,:])
 	plt.xlabel('Pulsar Position (mas)')
 	plt.ylabel('Magnification')
-	plt.savefig('%sDspec_Slice_%s_%s.png.png' % (dr, rat, 0, dens[0]))
+	plt.savefig('%sDspec_Slice_%s_%s_%sdense.png' % (dr, rat, 0, dens[0]))
 	plt.close('all')
 
 	plt.figure()
@@ -180,7 +180,7 @@ def dspec_find(task):
 		plt.plot(beta_dspec,dspec2[om==om_max[i],:])
 		plt.xlabel('Pulsar Position (mas)')
 		plt.ylabel('Magnification')
-		plt.savefig('%sDspec_Slice_%s_%s.png.png' % (dr, rat, widths[i], dens[0]))
+		plt.savefig('%sDspec_Slice_%s_%s_%sdense.png' % (dr, rat, widths[i], dens[0]))
 		plt.close('all')
 
 	return(mu_max,om_max,beta_max,dens,rat,direct)
