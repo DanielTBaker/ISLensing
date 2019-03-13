@@ -118,7 +118,7 @@ def dspec_find(task):
 	dspec[:, -1] = 1
 
 	plt.figure()
-	plt.plot(beta_dspec,dspec[om==om[dspec.max(1)==dspec.max()],:])
+	plt.plot(beta_dspec,dspec[om==om[dspec.max(1)==dspec.max()],:][0,:])
 	plt.xlabel('Pulsar Position (mas)')
 	plt.ylabel('Magnification')
 	plt.savefig('%sDspec_Slice_%s_%s.png.png' % (dr, rat, 0, dens[0]))
