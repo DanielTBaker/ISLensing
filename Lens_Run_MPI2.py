@@ -23,7 +23,7 @@ ts = MPI.Wtime()
 
 
 parser = argparse.ArgumentParser(description='Lens Recovery Code for B1957')
-parser.add_argument('-s', type = float, default = 2, help = 'Lens Thickness Sigma')
+parser.add_argument('-s', type = int, default = 2, help = 'Lens Thickness Sigma')
 parser.add_argument('-l', type = float, default = 0, help = 'Lower Bound on Amplitude Parameter')
 parser.add_argument('-u', type = float, default = 2.2, help = 'Upper Bound on Amplitude Parameter')
 parser.add_argument('-n', type = int, default = 45, help = 'Number of Amplitude Parameters in Range')
@@ -35,13 +35,13 @@ rats = np.linspace(args.l,args.u,args.n)
 T = .03*(u.AU.to(u.m))
 A = .3*(u.AU.to(u.m))
 R = 4.8*(u.kpc.to(u.m))
-sig = (args.s/2.)*T/(2*np.sqrt(2*np.log(2)))
+sig = (1./args.s)*T/(2*np.sqrt(2*np.log(2)))
 #S_par=np.array([A,np.sqrt(A*R)])
 inc = 1e-5*u.rad
 
 Ds = (389*u.pc).to(u.m)
 
-params = np.array([args.s, inc.value, Ds.value, np.sqrt(A*R)])
+params = np.array([sig, inc.value, Ds.value, np.sqrt(A*R)])
 
 def sheet(z,A,sig):
     return(A*np.exp(-np.power(z/sig,2)/2))
