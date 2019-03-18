@@ -92,6 +92,10 @@ for rat in rats:
 
 	x=((np.linspace(-30,30,10000))*(u.mas.to(u.rad))*Ds).astype('float128')
 
+	for i in range(x0_crit.shape[0]):
+		x=np.concatenate((x,np.linspace(x0_crit[i]-5*sig,x0_crit[i]+5*sig,101)))
+	x=np.unique(x)
+
 	print('%s I Calc Start at %s' %(rat,MPI.Wtime()-ts))
 
 	I=Lens_Mod.I_calc_mpi(x.value,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool)
