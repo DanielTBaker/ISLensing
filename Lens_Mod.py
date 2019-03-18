@@ -18,8 +18,8 @@ def I_calc_indiv(tasks):
 	I=0
 	x0=x/np.cos(inc.value)
 	##x intercept of boundry curves
-	x0_l=x0+(100*sig/np.cos(inc.value))
-	x0_h=x0-(100*sig/np.cos(inc.value))
+	x0_l=x0+(200*sig/np.cos(inc.value))
+	x0_h=x0-(200*sig/np.cos(inc.value))
 	pairs=list()
 	##If x0_l is smaller than the first x0 s.t los is tangent to sheet, then it intersects only once
 	if x0_l<x0_crit[0]:
