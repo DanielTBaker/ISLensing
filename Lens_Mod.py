@@ -101,7 +101,7 @@ def I_calc_indiv(tasks):
 	#for i in range(ints_tot.shape[0]//2):
 		#I+=quadrature(igrand,ints_tot[::2][i],ints_tot[1::2][i],args=(x0,inc,sig,S_par,sheet,sheet_dl))[0]
 		#I+=romberg(igrand,ints_tot[::2][i],ints_tot[1::2][i],args=(x0,inc,sig,S_par,sheet,sheet_dl))
-	I=quad(igrand,ints_tot[0],ints_tot[-1],args=(x0,inc,sig,S_par,sheet,sheet_dl),points=ints_tot[1:-1])
+	I=quad(igrand,ints_tot[0],ints_tot[-1],args=(x0,inc,sig,S_par,sheet,sheet_dl),points=ints_tot[1:-1])[0]
 	return(I)
 
 def I_calc_mpi(x,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool):
