@@ -93,7 +93,7 @@ def I_calc_indiv(tasks):
 	return(I)
 
 def I_calc_mpi(x,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,sig,pool):
-	tasks=list((x[i],inc,sig,x0_crit,z_list,S_par,zmin,zmax,sheet,sheet_dl) for i in range(x.shape[0]))
+	tasks=list((x[i],inc,sig,np.array(x0_crit),z_list,S_par,zmin,zmax,sheet,sheet_dl) for i in range(x.shape[0]))
 	return(np.array(pool.map(I_calc_indiv,tasks)))
 
 ##Determine effective thickness along LoS for point x
