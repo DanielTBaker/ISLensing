@@ -261,8 +261,8 @@ def res_improve_mpi(err,x,I,sheet,sheet_dl,S_par,zmax,zmin,inc,x0_crit,z_list,si
 		x2,idx_unique=np.unique(x2,return_index=True)
 		I2=I2[idx_unique]
 		iters+=1
-		x2=x2[I2>I2[0]/1e10]
-		I2=I2[I2>I2[0]/1e10]
+#		x2=x2[I2>I2[0]/1e10]
+#		I2=I2[I2>I2[0]/1e10]
 #		I2=I2[x2.argsort()]
 #		x2=x2[x2.argsort()]
 	return(x2,I2)
