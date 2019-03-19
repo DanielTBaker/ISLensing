@@ -92,10 +92,11 @@ def I_calc_indiv(tasks):
 			pairs.append((ints[i],ints[i+1]))
 	ints=np.zeros(len(pairs),dtype='float128')
 	for i in range(len(pairs)):
-		ints_high[i]=brenth(dist,pairs[i][0],pairs[i][1],args=(x0,inc,S_par,sheet))
-	ints_tot=np.concatenate((np.array([-np.inf,np.inf]),ints_low,ints_high,ints))
+		ints[i]=brenth(dist,pairs[i][0],pairs[i][1],args=(x0,inc,S_par,sheet))
+	int_tot=np.concatenate((ints_low,ints_high,ints))
 	for i in range(len(z_list)):
 		ints_tot=np.concatenate((ints_tot,z_list[i]))
+	ints_tot=np.concatenate((np.array([np.min(zmin,int_tot.max()-2*(int_tot.max()-int_tot.min())),np.max(zmax,int_tot.min()+2*(int_tot.max()-int_tot.min()))])))
 	ints_tot=np.unique(ints_tot)
 	for i in range(ints_tot.shape[0]//2):
 		I+=quadrature(igrand,ints_tot[::2][i],ints_tot[1::2][i],args=(x0,inc,sig,S_par,sheet,sheet_dl))[0]
