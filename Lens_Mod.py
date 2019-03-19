@@ -96,7 +96,7 @@ def I_calc_indiv(tasks):
 	ints_tot=np.concatenate((ints_low,ints_high,ints))
 	for i in range(len(z_list)):
 		ints_tot=np.concatenate((ints_tot,z_list[i]))
-	ints_tot=np.concatenate((np.array([np.min(zmin,ints_tot.max()-2*(ints_tot.max()-ints_tot.min())),np.max(zmax,ints_tot.min()+2*(ints_tot.max()-ints_tot.min()))])))
+	ints_tot=np.concatenate((np.array([min((zmin,ints_tot.max()-2*(ints_tot.max()-ints_tot.min()))),max((zmax,ints_tot.min()+2*(ints_tot.max()-ints_tot.min())))]),ints_tot))
 	ints_tot=np.unique(ints_tot)
 	for i in range(ints_tot.shape[0]//2):
 		I+=quadrature(igrand,ints_tot[::2][i],ints_tot[1::2][i],args=(x0,inc,sig,S_par,sheet,sheet_dl))[0]
