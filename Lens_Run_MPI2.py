@@ -113,6 +113,7 @@ for rat in rats:
 	plt.figure()
 	plt.plot(x2,I2)
 	plt.plot(x,I)
+	plt.yscale('log')
 	plt.savefig('./Sims-%s/Thickness-%s.png' %(par_number,rat))
 	plt.close('all')
 

@@ -33,13 +33,9 @@ def I_calc_indiv(tasks):
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
-		ar1,ar2=np.array(z_list)[x0_crit==x0_crit[x0_crit>x0].min(),:][0,:],np.array(z_list)[x0_crit==x0_crit[x0_crit<x0].max(),:][0,:]
-		full=np.concatenate((ar1,ar2))
-		int_set=np.concatenate((np.ones(ar1.shape[0]),np.ones(ar2.shape[0])*2))[full.argsort()]
-		full=full[full.argsort()]
-		diff=np.diff(int_set)
-		ints=full[1:][np.abs(diff)>0]
-		ints=np.concatenate((full[:1],ints))
+		zl1=zlist[x0_crit==x0_crit[x0_crit<x0_l].max()].flatten()
+		zl2=zlist[x0_crit==x0_crit[x0_crit>x0_l].min()].flatten()
+		ints=np.unique(np.concatenate((zl1,zl2)))
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
 	ints_low=np.zeros(len(pairs),dtype='float128')
@@ -57,13 +53,9 @@ def I_calc_indiv(tasks):
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
-		ar1,ar2=np.array(z_list)[x0_crit==x0_crit[x0_crit>x0_h].min(),:][0,:],np.array(z_list)[x0_crit==x0_crit[x0_crit<x0_h].max(),:][0,:]
-		full=np.concatenate((ar1,ar2))
-		int_set=np.concatenate((np.ones(ar1.shape[0]),np.ones(ar2.shape[0])*2))[full.argsort()]
-		full=full[full.argsort()]
-		diff=np.diff(int_set)
-		ints=full[1:][np.abs(diff)>0]
-		ints=np.concatenate((full[:1],ints))
+		zl1=zlist[x0_crit==x0_crit[x0_crit<x0_h].max()].flatten()
+		zl2=zlist[x0_crit==x0_crit[x0_crit>x0_h].min()].flatten()
+		ints=np.unique(np.concatenate((zl1,zl2)))
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
 	ints_high=np.zeros(len(pairs),dtype='float128')
@@ -81,13 +73,9 @@ def I_calc_indiv(tasks):
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
-		ar1,ar2=np.array(z_list)[x0_crit==x0_crit[x0_crit>x0].min(),:][0,:],np.array(z_list)[x0_crit==x0_crit[x0_crit<x0].max(),:][0,:]
-		full=np.concatenate((ar1,ar2))
-		int_set=np.concatenate((np.ones(ar1.shape[0]),np.ones(ar2.shape[0])*2))[full.argsort()]
-		full=full[full.argsort()]
-		diff=np.diff(int_set)
-		ints=full[1:][np.abs(diff)>0]
-		ints=np.concatenate((full[:1],ints))
+		zl1=zlist[x0_crit==x0_crit[x0_crit<x0].max()].flatten()
+		zl2=zlist[x0_crit==x0_crit[x0_crit>x0].min()].flatten()
+		ints=np.unique(np.concatenate((zl1,zl2)))
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
 	ints=np.zeros(len(pairs),dtype='float128')
