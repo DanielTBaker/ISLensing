@@ -18,8 +18,8 @@ def I_calc_indiv(tasks):
 	I=0
 	x0=x/np.cos(inc.value)
 	##x intercept of boundry curves
-	x0_l=x0+(200*sig/np.cos(inc.value))
-	x0_h=x0-(200*sig/np.cos(inc.value))
+	x0_l=x0+(5*sig/np.cos(inc.value))
+	x0_h=x0-(5*sig/np.cos(inc.value))
 	pairs=list()
 	##If x0_l is smaller than the first x0 s.t los is tangent to sheet, then it intersects only once
 	if x<x0_crit[0]:
@@ -40,7 +40,6 @@ def I_calc_indiv(tasks):
 		diff=np.diff(int_set)
 		ints=full[1:][np.abs(diff)>0]
 		ints=np.concatenate((full[:1],ints))
-		pairs=list()
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
 	ints_low=np.zeros(len(pairs),dtype='float128')
@@ -65,7 +64,6 @@ def I_calc_indiv(tasks):
 		diff=np.diff(int_set)
 		ints=full[1:][np.abs(diff)>0]
 		ints=np.concatenate((full[:1],ints))
-		pairs=list()
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
 	ints_high=np.zeros(len(pairs),dtype='float128')
@@ -90,7 +88,6 @@ def I_calc_indiv(tasks):
 		diff=np.diff(int_set)
 		ints=full[1:][np.abs(diff)>0]
 		ints=np.concatenate((full[:1],ints))
-		pairs=list()
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
 	ints=np.zeros(len(pairs),dtype='float128')
