@@ -90,7 +90,7 @@ for rat in rats:
 	x0_crit,z_list=Lens_Mod.zbnd_find(zmin,zmax,10000,sheet_dir,sheet,S_par,inc)
 	print(x0_crit,z_list)
 
-	x=((np.linspace(-10,10,10000))*(u.mas.to(u.rad))*Ds).astype('float128')
+	x=((np.linspace(-30,30,10000))*(u.mas.to(u.rad))*Ds).astype('float128')
 
 	for i in range(x0_crit.shape[0]):
 		x=np.concatenate((x,np.linspace(x0_crit[i]-5*sig,x0_crit[i]+5*sig,1001)))
