@@ -14,6 +14,7 @@ from time import perf_counter
 import os
 import argparse
 from emcee.utils import MPIPool
+import sys
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
