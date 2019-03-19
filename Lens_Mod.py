@@ -22,19 +22,19 @@ def I_calc_indiv(tasks):
 	x0_h=x0-(5*sig/np.cos(inc.value))
 	pairs=list()
 	##If x0_l is smaller than the first x0 s.t los is tangent to sheet, then it intersects only once
-	if x<x0_crit[0]:
+	if x0_l<x0_crit[0]:
 		x_max=sheet(z_list[0].max(),*S_par)
 		lower=z_list[0].max()
-		upper=max(((x_max-x0)/np.tan(inc.value),zmax))
+		upper=max(((x_max-x0_l)/np.tan(inc.value),zmax))
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
-	elif x0>x0_crit[-1]:
+	elif x0_l>x0_crit[-1]:
 		x_max=sheet(z_list[-1].min(),*S_par)
 		lower=min(((x_max-x0_l)/np.tan(inc.value),zmin))
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
-		zl1=zlist[x0_crit==x0_crit[x0_crit<x0_l].max()].flatten()
-		zl2=zlist[x0_crit==x0_crit[x0_crit>x0_l].min()].flatten()
+		zl1=z_list[x0_crit==x0_crit[x0_crit<x0_l].max()].flatten()
+		zl2=z_list[x0_crit==x0_crit[x0_crit>x0_l].min()].flatten()
 		ints=np.unique(np.concatenate((zl1,zl2)))
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
@@ -53,8 +53,8 @@ def I_calc_indiv(tasks):
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
-		zl1=zlist[x0_crit==x0_crit[x0_crit<x0_h].max()].flatten()
-		zl2=zlist[x0_crit==x0_crit[x0_crit>x0_h].min()].flatten()
+		zl1=z_list[x0_crit==x0_crit[x0_crit<x0_h].max()].flatten()
+		zl2=z_list[x0_crit==x0_crit[x0_crit>x0_h].min()].flatten()
 		ints=np.unique(np.concatenate((zl1,zl2)))
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
@@ -73,8 +73,8 @@ def I_calc_indiv(tasks):
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
-		zl1=zlist[x0_crit==x0_crit[x0_crit<x0].max()].flatten()
-		zl2=zlist[x0_crit==x0_crit[x0_crit>x0].min()].flatten()
+		zl1=z_list[x0_crit==x0_crit[x0_crit<x0].max()].flatten()
+		zl2=z_list[x0_crit==x0_crit[x0_crit>x0].min()].flatten()
 		ints=np.unique(np.concatenate((zl1,zl2)))
 		for i in range(ints.shape[0]-1):
 			pairs.append((ints[i],ints[i+1]))
