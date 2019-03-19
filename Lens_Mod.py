@@ -98,7 +98,7 @@ def I_calc_indiv(tasks):
 		ints_high[i]=brenth(dist,pairs[i][0],pairs[i][1],args=(x0,inc,S_par,sheet))
 	ints_tot=np.concatenate((np.array([-np.inf,np.inf]),ints_low,ints_high,ints))
 	for i in range(len(z_list)):
-		ints_tot=np.concatenate((ints_tot,x_list[i]))
+		ints_tot=np.concatenate((ints_tot,z_list[i]))
 	ints_tot=np.unique(ints_tot)
 	for i in range(ints_tot.shape[0]//2):
 		I+=quad(igrand,ints_tot[::2][i],ints_tot[1::2][i],args=(x0,inc,sig,S_par,sheet,sheet_dl),epsrel=1.e-16)[0]
