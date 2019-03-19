@@ -17,23 +17,20 @@ def I_calc_indiv(tasks):
 	x,inc,sig,x0_crit,z_list,S_par,zmin,zmax,sheet,sheet_dl = tasks
 	I=0
 	x0=x/np.cos(inc.value)
-	##x intercept of boundry curves
-	x0_l=x0+(200*sig/np.cos(inc.value))
-	x0_h=x0-(200*sig/np.cos(inc.value))
 	pairs=list()
 	##If x0_l is smaller than the first x0 s.t los is tangent to sheet, then it intersects only once
-	if x0_l<x0_crit[0]:
+	if x<x0_crit[0]:
 		x_max=sheet(z_list[0].max(),*S_par)
 		lower=z_list[0].max()
-		upper=max(((x_max-x0_l)/np.tan(inc.value),zmax))
+		upper=max(((x_max-x0)/np.tan(inc.value),zmax))
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
-	elif x0_l>x0_crit[-1]:
+	elif x0>x0_crit[-1]:
 		x_max=sheet(z_list[-1].min(),*S_par)
 		lower=min(((x_max-x0_l)/np.tan(inc.value),zmin))
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
-		ar1,ar2=np.array(z_list)[x0_crit==x0_crit[x0_crit>x0_l].min(),:][0,:],np.array(z_list)[x0_crit==x0_crit[x0_crit<x0_l].max(),:][0,:]
+		ar1,ar2=np.array(z_list)[x0_crit==x0_crit[x0_crit>x0].min(),:][0,:],np.array(z_list)[x0_crit==x0_crit[x0_crit<x0].max(),:][0,:]
 		full=np.concatenate((ar1,ar2))
 		int_set=np.concatenate((np.ones(ar1.shape[0]),np.ones(ar2.shape[0])*2))[full.argsort()]
 		full=full[full.argsort()]
@@ -71,7 +68,35 @@ def I_calc_indiv(tasks):
 	ints_high=np.zeros(len(pairs),dtype='float128')
 	for i in range(len(pairs)):
 		ints_high[i]=brenth(dist,pairs[i][0],pairs[i][1],args=(x0_h,inc,S_par,sheet))
-	ints_tot=np.sort(np.concatenate((ints_low,ints_high)))
+	pairs=list()
+	if x0<x0_crit[0]:
+		x_max=sheet(z_list[0].max(),*S_par)
+		lower=z_list[0].max()
+		upper=max(((x_max-x0)/np.tan(inc.value),zmax))
+		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
+	elif x0>x0_crit[-1]:
+		x_max=sheet(z_list[-1].min(),*S_par)
+		lower=min(((x_max-x0)/np.tan(inc.value),zmin))
+		upper=z_list[-1].min()
+		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
+	else:
+		ar1,ar2=np.array(z_list)[x0_crit==x0_crit[x0_crit>x0].min(),:][0,:],np.array(z_list)[x0_crit==x0_crit[x0_crit<x0].max(),:][0,:]
+		full=np.concatenate((ar1,ar2))
+		int_set=np.concatenate((np.ones(ar1.shape[0]),np.ones(ar2.shape[0])*2))[full.argsort()]
+		full=full[full.argsort()]
+		diff=np.diff(int_set)
+		ints=full[1:][np.abs(diff)>0]
+		ints=np.concatenate((full[:1],ints))
+		pairs=list()
+		for i in range(ints.shape[0]-1):
+			pairs.append((ints[i],ints[i+1]))
+	ints=np.zeros(len(pairs),dtype='float128')
+	for i in range(len(pairs)):
+		ints_high[i]=brenth(dist,pairs[i][0],pairs[i][1],args=(x0,inc,S_par,sheet))
+	ints_tot=np.concatenate((np.array([-np.inf,np.inf]),ints_low,ints_high,ints))
+	for i in range(len(z_list)):
+		ints_tot=np.concatenate((ints_tot,x_list[i]))
+	ints_tot=np.unique(ints_tot)
 	for i in range(ints_tot.shape[0]//2):
 		I+=quad(igrand,ints_tot[::2][i],ints_tot[1::2][i],args=(x0,inc,sig,S_par,sheet,sheet_dl),epsrel=1.e-16)[0]
 	return(I)
