@@ -23,6 +23,7 @@ from scipy.optimize import minimize
 from matplotlib.colors import LogNorm
 from emcee.utils import MPIPool
 import sys
+import argparse
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -30,11 +31,14 @@ size = comm.Get_size()
 
 ts = MPI.Wtime()
 
+parser = argparse.ArgumentParser(description='Lens Recovery Code for B1957')
+parser.add_argument('-d', type = int, default = 1, help = 'Thickness Directory')
+args = parser.parse_args()
+
 ne = (.3 / (u.cm**3))
 delta_ne = (.003 / (u.cm**3))
 
-om = (np.logspace(3,
-                  np.log10(6) + 4, 2000) * u.MHz).to(1 / u.s)[::-1]
+om = (np.logspace(1,4, 50) * u.MHz).to(1 / u.s)[::-1]
 
 Ds = (389 * u.pc).to(u.m)
 Dp = (620 * u.pc).to(u.m)
@@ -57,14 +61,11 @@ gau /= gau.sum(1)[:, np.newaxis]
 Fgau = np.fft.rfft(gau, axis=1)
 dspec = np.zeros((om.shape[0], beta_dspec.shape[0]))
 
-dirlistall = os.listdir('./')
-dirlist = list(filter(lambda x: x.startswith('Sims'), dirlistall))
+direct='Sims-%s' args.d
 
 filelist = list()
-for i in range(len(dirlist)):
-    filelistall = os.listdir('./%s/' % dirlist[i])
-    temp_list = list(filter(lambda x: x.startswith('x-'), filelistall))
-    filelist.append(temp_list)
+filelistall = os.listdir('./%s/' % direct)
+filelist = list(filter(lambda x: x.startswith('x-'), filelistall))
 
 def dspec_find(task):
 	rat=task[1]
@@ -182,8 +183,7 @@ def dspec_find(task):
 		plt.ylabel('Magnification')
 		plt.savefig('%sDspec_Slice_%s_%s_%sdense.png' % (dr, rat, widths[i], dens[0]))
 		plt.close('all')
-
-	return(mu_max,om_max,beta_max,dens,rat,direct)
+	return(mu_max,om_max,beta_max,dens,rat)
 
 pool = MPIPool(loadbalance=True)
 if not pool.is_master():
@@ -191,9 +191,8 @@ if not pool.is_master():
 	sys.exit(0)
 
 tasks =list()
-for i in range(len(dirlist)):
-	for k in range(len(filelist[i])):
-		tasks.append((dirlist[i],float(filelist[i][k][2:-4]),'Under'))
+for i in range(len(filelist)):
+		tasks.append((float(filelist[i][2:-4]),'Under'))
 
 vals=pool.map(dspec_find,tasks)
 pool.close()
@@ -203,7 +202,6 @@ om_max=np.zeros((len(vals),widths.shape[0]))
 beta_max=np.zeros((len(vals),widths.shape[0]))
 rats=np.zeros(len(vals))
 dens=np.empty(len(vals),dtype='<U10')
-dirs=np.empty(len(vals),dtype='<U10')
 
 for i in range(len(vals)):
 	mu_max[i,:]=vals[i][0]
@@ -211,9 +209,8 @@ for i in range(len(vals)):
 	beta_max[i,:]=vals[i][2]
 	rats[i]=vals[i][4]
 	dens[i]=vals[i][3]
-	dirs[i]=vals[i][5]
 
-np.savez('Evolution.npz', mu_max,om_max,beta_max,rats,dens,dirs)
+np.savez('%sEvolution.npz' % direct, mu_max,om_max,beta_max,rats,dens)
 
 
 
