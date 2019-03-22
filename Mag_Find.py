@@ -92,97 +92,103 @@ def dspec_find(task):
 		dr = './%s/A%s/' % (direct, rat)
 	if not os.path.exists(dr):
 		os.mkdir(dr)
-	I = I[np.concatenate((np.array([True]), np.abs(np.diff(x)) > 0))]
-	x = x[np.concatenate((np.array([True]), np.abs(np.diff(x)) > 0))]
-	if rat==0.0:
-		I[:]=I.mean()
-	plt.figure(1)
-	plt.plot(((x / Ds.value) * u.rad).to(u.mas), I)
-	plt.xlabel('Line of Sight Coordinate (mas)')
-	plt.ylabel('Effective Thickness')
-	plt.title('Lens Profile for $A_{par} = %s$' % rat)
-	plt.xlim((-5, 5))
-	plt.savefig('%sI-%s.png' % (dr, rat))
-	plt.close('all')
-	interp = interp1d(x, I, kind='quadratic')
-	I_interp = interp(x_interp)
-	print('%s %s Interpolation Complete at %s' % (direct,rat,MPI.Wtime()-ts))
-	dspec *= 0
-	if dens == 'Over':
-		delta_ne = np.abs(delta_ne)
+	if os.path.isfile('%sEvo.npz' %dr)
+		mu_max=np.load('%sEvo.npz' %dr)['mu_max']
+		beta_max=np.load('%sEvo.npz' %dr)['mu_max']
+		om_max=np.load('%sEvo.npz' %dr)['om_max']
 	else:
-		delta_ne = -np.abs(delta_ne)
-	for i in range(om.shape[0]):
-		theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne,delta_ne, om[i:i+1], Ds, s)
-		dspec[i,:-1]=np.histogram(beta_AR[0,:], bins=beta_dspec)[0]
-	dspec *= (np.median((np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /np.median(np.diff(beta_dspec))).value
-	dspec[:, -1] = 1
+		I = I[np.concatenate((np.array([True]), np.abs(np.diff(x)) > 0))]
+		x = x[np.concatenate((np.array([True]), np.abs(np.diff(x)) > 0))]
+		if rat==0.0:
+			I[:]=I.mean()
+		plt.figure(1)
+		plt.plot(((x / Ds.value) * u.rad).to(u.mas), I)
+		plt.xlabel('Line of Sight Coordinate (mas)')
+		plt.ylabel('Effective Thickness')
+		plt.title('Lens Profile for $A_{par} = %s$' % rat)
+		plt.xlim((-5, 5))
+		plt.savefig('%sI-%s.png' % (dr, rat))
+		plt.close('all')
+		interp = interp1d(x, I, kind='quadratic')
+		I_interp = interp(x_interp)
+		print('%s %s Interpolation Complete at %s' % (direct,rat,MPI.Wtime()-ts))
+		dspec *= 0
+		if dens == 'Over':
+			delta_ne = np.abs(delta_ne)
+		else:
+			delta_ne = -np.abs(delta_ne)
+		for i in range(om.shape[0]):
+			theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne,delta_ne, om[i:i+1], Ds, s)
+			dspec[i,:-1]=np.histogram(beta_AR[0,:], bins=beta_dspec)[0]
+		dspec *= (np.median((np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /np.median(np.diff(beta_dspec))).value
+		dspec[:, -1] = 1
 
-	plt.figure()
-	plt.plot(beta_dspec,dspec[om==om[dspec.max(1)==dspec.max()],:][0,:])
-	plt.xlabel('Pulsar Position (mas)')
-	plt.ylabel('Magnification')
-	plt.savefig('%sDspec_Slice_%s_%s_%sdense.png' % (dr, rat, 0, dens[0]))
-	plt.close('all')
-
-	plt.figure()
-	plc = plt.pcolormesh(np.mean(np.reshape(beta_dspec,(-1,100)),axis=1),om.to(u.MHz).value,np.mean(np.reshape(dspec,(om.shape[0],-1,100)),axis=2),norm=colors.LogNorm(),rasterized=True)
-	plc.set_edgecolor('face')
-	plt.colorbar()
-	plt.yscale('log')
-	plt.xlabel('Pulsar Position (mas)')
-	plt.ylabel('Frequency (MHz)')
-	plt.title(r'Dynamic Spectrum for $A_{par} = %s$ (%sdense)'
-	% (rat, dens))
-	plt.savefig('%sdspec-%s%s.png' % (dr, rat, dens))
-	plt.close('all')
-
-	print('%s %s %sdense Dspec Complete at %s' %(direct, rat, dens, MPI.Wtime()-ts))
-	om_temp = om[dspec.max(1) == dspec.max()][:1]
-	theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne, delta_ne, om_temp, Ds, s)
-	mu = 1 / np.gradient(beta_AR[0,:], theta_AR)
-	rough_temp = idx[1:][np.abs(np.diff(np.sign(mu))) == 2]
-	rough = np.concatenate((np.zeros(1, dtype=int), rough_temp,
-	np.array([x_interp.shape[0]], dtype=int)))
-	plt.figure(1)
-	for k in range(rough.shape[0] - 1):
-		plt.subplot(211)
-		plt.plot(beta_AR[0,rough[k]:rough[k + 1]],
-		theta_AR[rough[k]:rough[k + 1]])
-		plt.subplot(212)
-		plt.plot(beta_AR[0,rough[k]:rough[k + 1]],
-		np.abs(mu[rough[k]:rough[k + 1]]))
-	plt.xlabel('Pulsar Position (mas)')
-	plt.ylabel('Magnification')
-	plt.title('Magnification for $A_{par} = %s$ (%sdense)' %
-	(rat, dens))
-	plt.yscale('log')
-	plt.subplot(211)
-	plt.xlabel('Pulsar Position (mas)')
-	plt.ylabel('Image Position (mas)')
-	plt.title('Image Positions for $A_{par} = %s$ (%sdense)' %(rat, dens))
-	plt.xlim((-5, 5))
-	plt.ylim((-5, 5))
-	plt.tight_layout()
-	plt.savefig('%sImages-%s%s.png' % (dr, rat, dens[0]))
-	plt.close('all')
-
-	Fdspec = np.fft.rfft(dspec, axis=1)
-	om_max=np.zeros(widths.shape)
-	beta_max=np.zeros(widths.shape)
-	mu_max=np.zeros(widths.shape)
-	for i in range(widths.shape[0]):
-		dspec2 = np.fft.irfft(Fdspec * Fgau[i, :], axis=1)
-		print('%s %s %sdense %s width Dspec Complete at %s' % (direct, rat, dens, widths[i], MPI.Wtime()-ts))
-		om_max[i] = om[dspec2.max(1) == dspec2.max()][0].value
-		beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0].value
-		mu_max[i] = dspec2.max()
 		plt.figure()
-		plt.plot(beta_dspec,dspec2[om.value==om_max[i],:][0,:])
+		plt.plot(beta_dspec,dspec[om==om[dspec.max(1)==dspec.max()],:][0,:])
 		plt.xlabel('Pulsar Position (mas)')
 		plt.ylabel('Magnification')
-		plt.savefig('%sDspec_Slice_%s_%s_%sdense.png' % (dr, rat, widths[i], dens[0]))
+		plt.savefig('%sDspec_Slice_%s_%s_%sdense.png' % (dr, rat, 0, dens[0]))
 		plt.close('all')
+
+		plt.figure()
+		plc = plt.pcolormesh(np.mean(np.reshape(beta_dspec,(-1,100)),axis=1),om.to(u.MHz).value,np.mean(np.reshape(dspec,(om.shape[0],-1,100)),axis=2),norm=colors.LogNorm(),rasterized=True)
+		plc.set_edgecolor('face')
+		plt.colorbar()
+		plt.yscale('log')
+		plt.xlabel('Pulsar Position (mas)')
+		plt.ylabel('Frequency (MHz)')
+		plt.title(r'Dynamic Spectrum for $A_{par} = %s$ (%sdense)'
+		% (rat, dens))
+		plt.savefig('%sdspec-%s%s.png' % (dr, rat, dens))
+		plt.close('all')
+
+		print('%s %s %sdense Dspec Complete at %s' %(direct, rat, dens, MPI.Wtime()-ts))
+		om_temp = om[dspec.max(1) == dspec.max()][:1]
+		theta_AR, beta_AR = Lens_Mod.Im_find(x_interp * u.m, I_interp, ne, delta_ne, om_temp, Ds, s)
+		mu = 1 / np.gradient(beta_AR[0,:], theta_AR)
+		rough_temp = idx[1:][np.abs(np.diff(np.sign(mu))) == 2]
+		rough = np.concatenate((np.zeros(1, dtype=int), rough_temp,
+		np.array([x_interp.shape[0]], dtype=int)))
+		plt.figure(1)
+		for k in range(rough.shape[0] - 1):
+			plt.subplot(211)
+			plt.plot(beta_AR[0,rough[k]:rough[k + 1]],
+			theta_AR[rough[k]:rough[k + 1]])
+			plt.subplot(212)
+			plt.plot(beta_AR[0,rough[k]:rough[k + 1]],
+			np.abs(mu[rough[k]:rough[k + 1]]))
+		plt.xlabel('Pulsar Position (mas)')
+		plt.ylabel('Magnification')
+		plt.title('Magnification for $A_{par} = %s$ (%sdense)' %
+		(rat, dens))
+		plt.yscale('log')
+		plt.subplot(211)
+		plt.xlabel('Pulsar Position (mas)')
+		plt.ylabel('Image Position (mas)')
+		plt.title('Image Positions for $A_{par} = %s$ (%sdense)' %(rat, dens))
+		plt.xlim((-5, 5))
+		plt.ylim((-5, 5))
+		plt.tight_layout()
+		plt.savefig('%sImages-%s%s.png' % (dr, rat, dens[0]))
+		plt.close('all')
+
+		Fdspec = np.fft.rfft(dspec, axis=1)
+		om_max=np.zeros(widths.shape)
+		beta_max=np.zeros(widths.shape)
+		mu_max=np.zeros(widths.shape)
+		for i in range(widths.shape[0]):
+			dspec2 = np.fft.irfft(Fdspec * Fgau[i, :], axis=1)
+			print('%s %s %sdense %s width Dspec Complete at %s' % (direct, rat, dens, widths[i], MPI.Wtime()-ts))
+			om_max[i] = om[dspec2.max(1) == dspec2.max()][0].value
+			beta_max[i] = beta_dspec[dspec2.max(0) == dspec2.max()][0].value
+			mu_max[i] = dspec2.max()
+			plt.figure()
+			plt.plot(beta_dspec,dspec2[om.value==om_max[i],:][0,:])
+			plt.xlabel('Pulsar Position (mas)')
+			plt.ylabel('Magnification')
+			plt.savefig('%sDspec_Slice_%s_%s_%sdense.png' % (dr, rat, widths[i], dens[0]))
+			plt.close('all')
+		np.savez('%sEvo.npz' %dr,mu_max,om_max,beta_max)
 	return(mu_max,om_max,beta_max,dens,rat)
 
 pool = MPIPool(loadbalance=True)
