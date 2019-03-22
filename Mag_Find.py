@@ -38,7 +38,7 @@ args = parser.parse_args()
 ne = (.3 / (u.cm**3))
 delta_ne = (.003 / (u.cm**3))
 
-om = (np.logspace(1,4, 50) * u.MHz).to(1 / u.s)[::-1]
+om = (np.logspace(1,4, 2000) * u.MHz).to(1 / u.s)[::-1]
 
 Ds = (389 * u.pc).to(u.m)
 Dp = (620 * u.pc).to(u.m)
