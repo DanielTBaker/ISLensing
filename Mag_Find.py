@@ -61,7 +61,7 @@ gau /= gau.sum(1)[:, np.newaxis]
 Fgau = np.fft.rfft(gau, axis=1)
 dspec = np.zeros((om.shape[0], beta_dspec.shape[0]))
 
-direct='Sims-%s' args.d
+direct='Sims-%s' % args.d
 
 filelist = list()
 filelistall = os.listdir('./%s/' % direct)
