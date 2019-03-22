@@ -192,7 +192,7 @@ if not pool.is_master():
 
 tasks =list()
 for i in range(len(filelist)):
-		tasks.append((float(filelist[i][2:-4]),'Under'))
+		tasks.append((direct,float(filelist[i][2:-4]),'Under'))
 
 vals=pool.map(dspec_find,tasks)
 pool.close()
