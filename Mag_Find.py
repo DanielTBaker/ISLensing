@@ -92,7 +92,7 @@ def dspec_find(task):
 		dr = './%s/A%s/' % (direct, rat)
 	if not os.path.exists(dr):
 		os.mkdir(dr)
-	if os.path.isfile('%sEvo.npz' %dr)
+	if os.path.isfile('%sEvo.npz' %dr):
 		mu_max=np.load('%sEvo.npz' %dr)['mu_max']
 		beta_max=np.load('%sEvo.npz' %dr)['mu_max']
 		om_max=np.load('%sEvo.npz' %dr)['om_max']
