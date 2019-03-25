@@ -125,7 +125,7 @@ def dspec_find(task):
 			dspec[i,:-1]=np.histogram(beta_AR[0,:], bins=beta_dspec)[0]
 		dspec *= (np.median((np.diff(x_interp) / Ds.value) * (u.rad.to(u.mas))) /np.median(np.diff(beta_dspec))).value
 		dspec[:, -1] = 1
-
+		print(dspec[om==om[dspec.max(1)==dspec.max()],:].shape)
 		plt.figure()
 		plt.plot(beta_dspec,dspec[om==om[dspec.max(1)==dspec.max()],:][0,:])
 		plt.xlabel('Pulsar Position (mas)')
