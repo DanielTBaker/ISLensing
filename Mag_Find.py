@@ -35,7 +35,7 @@ parser = argparse.ArgumentParser(description='Lens Recovery Code for B1957')
 parser.add_argument('-d', type = int, default = 1, help = 'Thickness Directory')
 parser.add_argument('-l',type=float, default=1,help='log(min(om))')
 parser.add_argument('-p',type=float, default=6,help='log(max(om))')
-parser.add_agument('-n',type=int,default=20,help='number of om')
+parser.add_argument('-n',type=int,default=20,help='number of om')
 args = parser.parse_args()
 
 ne = (.3 / (u.cm**3))
