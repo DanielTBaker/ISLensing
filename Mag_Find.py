@@ -191,7 +191,7 @@ def dspec_find(task):
 			plt.ylabel('Magnification')
 			plt.savefig('%sDspec_Slice_%s_%s_%sdense.png' % (dr, rat, widths[i], dens[0]))
 			plt.close('all')
-		np.savez('%sEvo.npz' %dr,mu_max,om_max,beta_max)
+		np.savez('%sEvo.npz' %dr,mu_max=mu_max,om_max=om_max,beta_max=beta_max)
 	return(mu_max,om_max,beta_max,dens,rat)
 
 pool = MPIPool(loadbalance=True)
@@ -219,7 +219,7 @@ for i in range(len(vals)):
 	rats[i]=vals[i][4]
 	dens[i]=vals[i][3]
 
-np.savez('%sEvolution.npz' % direct, mu_max,om_max,beta_max,rats,dens)
+np.savez('%sEvolution.npz' % direct, mu_max=mu_max,om_max=om_max,beta_max=beta_max,rats=rats,dens=dens)
 
 
 
