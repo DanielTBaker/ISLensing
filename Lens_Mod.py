@@ -7,7 +7,7 @@ from astropy import constants as const
 
 ##Integral of density along line of sight due to gaussian centered at the point parameterized by z on the sheet
 def igrand(z,x0,inc,sig,S_par,sheet,sheet_dl):
-	return(np.exp(-np.power(dist(z,x0,inc,S_par,sheet)/sig,2))*sheet_dl(z,*S_par))
+	return(np.sqrt(2*np.pi)*sig*np.exp(-np.power(dist(z,x0,inc,S_par,sheet)/sig,2)/2)*sheet_dl(z,*S_par))
 
 ##x separation between LoS and sheet for a given z
 def dist(zp,x0,inc,S_par,sheet):
