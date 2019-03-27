@@ -53,6 +53,7 @@ def I_calc_indiv(tasks):
 		upper=z_list[-1].min()
 		pairs.append(((2*lower-((upper+lower)/2),2*upper-((upper+lower)/2))))
 	else:
+		print(x0_h)
 		zl1=z_list[np.argwhere(x0_crit==x0_crit[x0_crit<x0_h].max())[0,0]].flatten()
 		zl2=z_list[np.argwhere(x0_crit==x0_crit[x0_crit>x0_h].min())[0,0]].flatten()
 		ints=np.unique(np.concatenate((zl1,zl2)))
